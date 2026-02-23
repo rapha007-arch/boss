@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="mg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BOSS BET - Prédicteur Aviator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1c2c 0%, #2d1f3a 100%);
+            min-height: 100vh;
+            padding: 2rem 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #e1e1e6;
+        }
+
+        .container {
+            max-width: 500px;
+            width: 100%;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .logo-icon {
+            width: 2rem;
+            height: 2rem;
+            color: #ff6b6b;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #ff6b6b, #ffb347);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 2px;
+        }
+
+        .subtitle {
+            font-size: 0.875rem;
+            color: #8b8ba0;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+        }
+
+        .guide-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #8b8ba0;
+            text-decoration: none;
+            font-size: 0.9rem;
+            margin-top: 1rem;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            background: rgba(255,255,255,0.05);
+            transition: all 0.3s;
+        }
+
+        .guide-link:hover {
+            color: #ff6b6b;
+            background: rgba(255,107,107,0.1);
+        }
+
+        .card {
+            background: rgba(20, 20, 30, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 1rem;
+            border: 1px solid rgba(255,107,107,0.2);
+            margin-bottom: 2rem;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+        }
+
+        .card-content {
+            padding: 1.5rem;
+        }
+
+        .input-group {
+            margin-bottom: 1.25rem;
+        }
+
+        label {
+            display: block;
+            font-size: 0.875rem;
+            color: #a0a0b0;
+            margin-bottom: 0.5rem;
+        }
+
+        input {
+            width: 100%;
+            height: 3rem;
+            background: rgba(10, 10, 15, 0.6);
+            border: 1px solid #3a3a4a;
+            border-radius: 0.75rem;
+            padding: 0 1rem;
+            font-size: 1.25rem;
+            text-align: center;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            transition: all 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #ff6b6b;
+            box-shadow: 0 0 0 2px rgba(255,107,107,0.2);
+        }
+
+        input::placeholder {
+            color: #4a4a5a;
+            font-size: 0.875rem;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .prediction-card {
+            background: linear-gradient(135deg, #2a1f2f, #1f1f2f);
+            border: 2px solid rgba(255,107,107,0.3);
+            animation: glow 2s infinite;
+            margin-top: -1rem;
+        }
+
+        .prediction-title {
+            color: #8b8ba0;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+        }
+
+        .prediction-time {
+            font-family: 'Courier New', monospace;
+            font-size: 3.5rem;
+            font-weight: 900;
+            color: #ff6b6b;
+            text-shadow: 0 0 10px rgba(255,107,107,0.5);
+            line-height: 1.2;
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: center;
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            border: 1px solid transparent;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: rgba(255,255,255,0.05);
+            color: #e1e1e6;
+        }
+
+        .btn-outline {
+            border-color: #ff6b6b;
+            background: transparent;
+            color: #ff6b6b;
+        }
+
+        .btn-outline:hover {
+            background: rgba(255,107,107,0.1);
+        }
+
+        .btn-ghost:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .btn-icon {
+            width: 2rem;
+            height: 2rem;
+            padding: 0;
+            justify-content: center;
+        }
+
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .history-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #e1e1e6;
+        }
+
+        .history-item {
+            background: rgba(30, 30, 40, 0.6);
+            border-radius: 0.75rem;
+            padding: 0.75rem 1rem;
+            margin-bottom: 0.5rem;
+            border: 1px solid #3a3a4a;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .history-time {
+            font-family: 'Courier New', monospace;
+            font-size: 0.875rem;
+            color: #8b8ba0;
+        }
+
+        .history-result {
+            font-family: 'Courier New', monospace;
+            font-weight: 700;
+            color: #ff6b6b;
+        }
+
+        .history-risk {
+            font-size: 0.75rem;
+            color: #ffb347;
+        }
+
+        .empty-history {
+            color: #6a6a7a;
+            text-align: center;
+            padding: 2rem;
+            font-style: italic;
+        }
+
+        svg {
+            width: 1rem;
+            height: 1rem;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: #2a2f3f;
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 0.75rem;
+            border-left: 4px solid #ff6b6b;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(255,107,107,0.2); }
+            50% { box-shadow: 0 0 40px rgba(255,107,107,0.4); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <svg class="logo-icon" viewBox="0 0 24 24">
+                    <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/>
+                    <path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/>
+                    <path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/>
+                    <path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/>
+                </svg>
+                <h1>BOSS BET</h1>
+                <svg class="logo-icon" viewBox="0 0 24 24">
+                    <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/>
+                    <path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/>
+                    <path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/>
+                    <path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/>
+                </svg>
+            </div>
+            <p class="subtitle">Vers l'infini</p>
+            <a href="#guide" class="guide-link" onclick="toggleGuide(event)">
+                <svg viewBox="0 0 24 24">
+                    <path d="M12 7v14"/>
+                    <path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/>
+                </svg>
+                Guide
+            </a>
+        </header>
+
+        <!-- Formulaire de saisie -->
+        <div class="card">
+            <div class="card-content">
+                <div class="input-group">
+                    <label>Heure du tour (00:00 – 23:59)</label>
+                    <input type="text" id="tourTime" placeholder="HH:MM" maxlength="5" inputmode="numeric">
+                </div>
+
+                <div class="grid-2">
+                    <div class="input-group">
+                        <label>Hex one (0–9)</label>
+                        <input type="text" id="hexOne" placeholder="0" maxlength="1" inputmode="numeric">
+                    </div>
+                    <div class="input-group">
+                        <label>Hex two (0–9)</label>
+                        <input type="text" id="hexTwo" placeholder="0" maxlength="1" inputmode="numeric">
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="input-group">
+                        <label>Déc one (00–99)</label>
+                        <input type="text" id="decOne" placeholder="00" maxlength="2" inputmode="numeric">
+                    </div>
+                    <div class="input-group">
+                        <label>Déc two (00–99)</label>
+                        <input type="text" id="decTwo" placeholder="00" maxlength="2" inputmode="numeric">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Prédiction -->
+        <div class="card prediction-card" id="predictionCard" style="display: none;">
+            <div class="card-content" style="text-align: center;">
+                <p class="prediction-title">Prédiction</p>
+                <div class="prediction-time" id="predictionTime">00:00:00</div>
+                <div class="button-group">
+                    <button class="btn btn-outline" id="copyBtn" onclick="copyPrediction()">
+                        <svg viewBox="0 0 24 24">
+                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                        </svg>
+                        Copier
+                    </button>
+                    <button class="btn btn-ghost" id="newBtn" onclick="resetForm()">Nouveau</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Historique -->
+        <div id="historySection" style="display: none;">
+            <div class="history-header">
+                <span class="history-title">Historique</span>
+                <button class="btn btn-ghost" id="clearHistoryBtn" onclick="clearHistory()" style="color: #ff6b6b;">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M3 6h18"/>
+                        <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
+                        <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+                        <line x1="10" y1="11" x2="10" y2="17"/>
+                        <line x1="14" y1="11" x2="14" y2="17"/>
+                    </svg>
+                    Vider
+                </button>
+            </div>
+            <div id="historyList"></div>
+        </div>
+
+        <!-- Guide (caché par défaut) -->
+        <div id="guide" style="display: none; margin-top: 2rem;">
+            <div class="card">
+                <div class="card-content">
+                    <h3 style="color: #ff6b6b; margin-bottom: 1rem;">📘 Guide d'utilisation</h3>
+                    
+                    <div style="margin-bottom: 1.5rem;">
+                        <h4 style="color: #ffb347; margin-bottom: 0.5rem;">1. Heure du tour</h4>
+                        <p style="color: #a0a0b0; font-size: 0.9rem;">Saisissez l'heure du tour au format <strong style="color: #ff6b6b;">HH:MM</strong>. Les deux points ":" s'ajoutent automatiquement après les 2 premiers chiffres.</p>
+                        <p style="color: #6a6a7a; font-size: 0.8rem; margin-top: 0.25rem;">Plage valide : 00:00 à 23:59</p>
+                    </div>
+
+                    <div style="margin-bottom: 1.5rem;">
+                        <h4 style="color: #ffb347; margin-bottom: 0.5rem;">2. Hex one & Hex two</h4>
+                        <p style="color: #a0a0b0; font-size: 0.9rem;">Ce sont les chiffres extraits de la valeur hexadécimale du tour Aviator.</p>
+                        <ul style="color: #a0a0b0; font-size: 0.9rem; margin-left: 1.5rem; margin-top: 0.5rem;">
+                            <li><strong style="color: #ff6b6b;">Hex one</strong> : le premier chiffre de la valeur hex (0–9)</li>
+                            <li><strong style="color: #ff6b6b;">Hex two</strong> : le dernier chiffre de la valeur hex (0–9)</li>
+                        </ul>
+                        <p style="color: #6a6a7a; font-size: 0.8rem; margin-top: 0.5rem;">Exemple : si le hash est "3a...f7", Hex one = 3, Hex two = 7</p>
+                    </div>
+
+                    <div style="margin-bottom: 1.5rem;">
+                        <h4 style="color: #ffb347; margin-bottom: 0.5rem;">3. Déc one & Déc two</h4>
+                        <p style="color: #a0a0b0; font-size: 0.9rem;">Valeurs décimales extraites du multiplicateur ou du hash du tour.</p>
+                        <ul style="color: #a0a0b0; font-size: 0.9rem; margin-left: 1.5rem; margin-top: 0.5rem;">
+                            <li><strong style="color: #ff6b6b;">Déc one</strong> : les 2 premiers chiffres décimaux (00–99)</li>
+                            <li><strong style="color: #ff6b6b;">Déc two</strong> : les 2 derniers chiffres décimaux (00–99)</li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h4 style="color: #ffb347; margin-bottom: 0.5rem;">4. La prédiction</h4>
+                        <p style="color: #a0a0b0; font-size: 0.9rem;">Dès que tous les champs sont remplis, la prédiction <strong style="color: #ff6b6b;">HH:MM:SS</strong> s'affiche automatiquement.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast de notification -->
+    <div id="toast" class="toast"></div>
+
+    <script>
+        // ==================== STORAGE ====================
+        const STORAGE_KEY = 'bossbet-predictions';
+        
+        function loadHistory() {
+            try {
+                const data = localStorage.getItem(STORAGE_KEY);
+                return data ? JSON.parse(data) : [];
+            } catch {
+                return [];
+            }
+        }
+
+        function saveHistory(history) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
+        }
+
+        // ==================== ÉTAT INITIAL ====================
+        let predictions = loadHistory();
+        let currentPrediction = null;
+
+        // Références DOM
+        const tourTimeInput = document.getElementById('tourTime');
+        const hexOneInput = document.getElementById('hexOne');
+        const hexTwoInput = document.getElementById('hexTwo');
+        const decOneInput = document.getElementById('decOne');
+        const decTwoInput = document.getElementById('decTwo');
+        const predictionCard = document.getElementById('predictionCard');
+        const predictionTime = document.getElementById('predictionTime');
+        const historySection = document.getElementById('historySection');
+        const historyList = document.getElementById('historyList');
+        const toast = document.getElementById('toast');
+
+        // ==================== FONCTIONS UTILITAIRES ====================
+        function showToast(message, type = 'success') {
+            toast.textContent = message;
+            toast.style.borderLeftColor = type === 'success' ? '#ff6b6b' : '#ffb347';
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        function formatTimeInput(value) {
+            // Nettoie: ne garde que les chiffres
+            let digits = value.replace(/\D/g, '').slice(0, 4);
+            
+            // Formate HH:MM
+            if (digits.length > 2) {
+                let hours = digits.slice(0, 2);
+                let minutes = digits.slice(2);
+                
+                // Validation
+                hours = Math.min(parseInt(hours) || 0, 23).toString().padStart(2, '0');
+                minutes = Math.min(parseInt(minutes) || 0, 59).toString().padStart(2, '0');
+                
+                return hours + ':' + minutes;
+            } else if (digits.length === 2) {
+                let hours = Math.min(parseInt(digits) || 0, 23).toString().padStart(2, '0');
+                return hours + ':';
+            } else if (digits.length > 0) {
+                return digits;
+            }
+            return '';
+        }
+
+        function validateAndFormat(input, maxLength, maxValue = null) {
+            let digits = input.replace(/\D/g, '').slice(0, maxLength);
+            
+            if (maxValue !== null && digits.length === maxLength) {
+                let num = parseInt(digits, 10);
+                if (num > maxValue) {
+                    digits = maxValue.toString().padStart(maxLength, '0');
+                }
+            }
+            
+            return digits;
+        }
+
+        function isFormValid() {
+            return tourTimeInput.value.length === 5 &&
+                   hexOneInput.value.length === 1 &&
+                   hexTwoInput.value.length === 1 &&
+                   decOneInput.value.length === 2 &&
+                   decTwoInput.value.length === 2;
+        }
+
+        function calculatePrediction() {
+            if (!isFormValid()) return null;
+
+            const [hours, minutes] = tourTimeInput.value.split(':').map(Number);
+            const hex1 = parseInt(hexOneInput.value, 10);
+            const hex2 = parseInt(hexTwoInput.value, 10);
+            const dec1 = parseInt(decOneInput.value, 10);
+            const dec2 = parseInt(decTwoInput.value, 10);
+
+            if (isNaN(hours) || isNaN(minutes) || isNaN(hex1) || isNaN(hex2) || isNaN(dec1) || isNaN(dec2)) {
+                return null;
+            }
+
+            let totalSeconds = minutes * 60;
+            totalSeconds += Math.abs(hex1 - hex2) * 60;
+            totalSeconds += dec1 + dec2;
+
+            let finalMinutes = Math.floor(totalSeconds / 60);
+            let finalSeconds = totalSeconds % 60;
+
+            let finalHours = hours;
+            while (finalMinutes >= 60) {
+                finalMinutes -= 60;
+                finalHours = (finalHours + 1) % 24;
+            }
+
+            return `${String(finalHours).padStart(2, '0')}:${String(finalMinutes).padStart(2, '0')}:${String(finalSeconds).padStart(2, '0')}`;
+        }
+
+        function generateRiskMultiplier() {
+            // Simulation de risque (30% de chance d'être élevé)
+            return Math.random() < 0.3 ? Math.floor(Math.random() * 40) * 10 + 110 : Math.floor(Math.random() * 10) * 10 + 10;
+        }
+
+        function addPredictionToHistory(predictionTime, tourTime) {
+            const riskMultiplier = generateRiskMultiplier();
+            const newPrediction = {
+                id: crypto.randomUUID ? crypto.randomUUID() : Date.now() + '-' + Math.random(),
+                tourTime: tourTime,
+                result: predictionTime,
+                riskMultiplier: riskMultiplier,
+                timestamp: Date.now()
+            };
+
+            predictions = [newPrediction, ...predictions];
+            predictions.sort((a, b) => a.result.localeCompare(b.result));
+            saveHistory(predictions);
+            renderHistory();
+            showToast('Prédiction enregistrée !');
+        }
+
+        function deletePrediction(id) {
+            predictions = predictions.filter(p => p.id !== id);
+            saveHistory(predictions);
+            renderHistory();
+            showToast('Prédiction supprimée', 'info');
+        }
+
+        function clearHistory() {
+            if (predictions.length === 0) return;
+            predictions = [];
+            saveHistory(predictions);
+            renderHistory();
+            showToast('Historique vidé', 'info');
+        }
+
+        function renderHistory() {
+            if (predictions.length === 0) {
+                historySection.style.display = 'none';
+                return;
+            }
+
+            historySection.style.display = 'block';
+            let html = '';
+
+            predictions.forEach(p => {
+                html += `
+                    <div class="history-item">
+                        <div>
+                            <div class="history-time">${p.tourTime}</div>
+                            <div class="history-risk">✅X3 assuré et risque (x${p.riskMultiplier})🎯🚨</div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <span class="history-result">${p.result}</span>
+                            <button class="btn btn-icon" onclick="deletePrediction('${p.id}')" style="color: #ff6b6b;">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M3 6h18"/>
+                                    <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
+                                    <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+                                    <line x1="10" y1="11" x2="10" y2="17"/>
+                                    <line x1="14" y1="11" x2="14" y2="17"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            historyList.innerHTML = html;
+        }
+
+        function copyPrediction() {
+            if (!currentPrediction) return;
+            
+            navigator.clipboard.writeText(currentPrediction).then(() => {
+                showToast('Prédiction copiée !');
+            }).catch(() => {
+                showToast('Erreur de copie', 'error');
+            });
+        }
+
+        function resetForm() {
+            tourTimeInput.value = '';
+            hexOneInput.value = '';
+            hexTwoInput.value = '';
+            decOneInput.value = '';
+            decTwoInput.value = '';
+            predictionCard.style.display = 'none';
+            currentPrediction = null;
+        }
+
+        function toggleGuide(event) {
+            event.preventDefault();
+            const guide = document.getElementById('guide');
+            guide.style.display = guide.style.display === 'none' ? 'block' : 'none';
+        }
+
+        // ==================== EVENT LISTENERS ====================
+        tourTimeInput.addEventListener('input', (e) => {
+            e.target.value = formatTimeInput(e.target.value);
+        });
+
+        hexOneInput.addEventListener('input', (e) => {
+            e.target.value = validateAndFormat(e.target.value, 1, 9);
+        });
+
+        hexTwoInput.addEventListener('input', (e) => {
+            e.target.value = validateAndFormat(e.target.value, 1, 9);
+        });
+
+        decOneInput.addEventListener('input', (e) => {
+            e.target.value = validateAndFormat(e.target.value, 2, 99);
+        });
+
+        decTwoInput.addEventListener('input', (e) => {
+            e.target.value = validateAndFormat(e.target.value, 2, 99);
+        });
+
+        // Vérification en temps réel
+        function checkInputs() {
+            if (isFormValid()) {
+                const prediction = calculatePrediction();
+                if (prediction) {
+                    currentPrediction = prediction;
+                    predictionTime.textContent = prediction;
+                    predictionCard.style.display = 'block';
+                    addPredictionToHistory(prediction, tourTimeInput.value);
+                }
+            } else {
+                predictionCard.style.display = 'none';
+            }
+        }
+
+        tourTimeInput.addEventListener('input', checkInputs);
+        hexOneInput.addEventListener('input', checkInputs);
+        hexTwoInput.addEventListener('input', checkInputs);
+        decOneInput.addEventListener('input', checkInputs);
+        decTwoInput.addEventListener('input', checkInputs);
+
+        // Rendu initial de l'historique
+        renderHistory();
+
+        // Rendre les fonctions disponibles globalement pour les appels onclick
+        window.copyPrediction = copyPrediction;
+        window.resetForm = resetForm;
+        window.clearHistory = clearHistory;
+        window.deletePrediction = deletePrediction;
+        window.toggleGuide = toggleGuide;
+    </script>
+</body>
+</html>
